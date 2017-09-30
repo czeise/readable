@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
+import Header from './Header';
+import { Grid } from 'react-bootstrap';
 
 class App extends Component {
   render() {
     return (
-      <div>
-        Readable
-      </div>
+      <Grid>
+        <Header selectedCategory='none'/>
+      </Grid>
     );
   }
 }
