@@ -4,7 +4,9 @@ const API = 'http://localhost:3001';
 const header = { headers: { 'Authorization': AUTHORIZATION } };
 
 export function getCategories() {
-  return fetch(`${API}/categories`, header)
+  const url = `${API}/categories`;
+
+  return fetch(url, header)
     .then(res => res.json())
     .then(data => data.categories);
 }
@@ -16,18 +18,24 @@ export function getPosts(category) {
     .then(res => res.json());
 }
 
-export function getPostDetails(id) {
-  return fetch(`${API}/posts/${id}`, header)
+export function getPost(id) {
+  const url = `${API}/posts/${id}`;
+
+  return fetch(url, header)
     .then(res => res.json());
 }
 
 export function getComments(id) {
-  return fetch(`${API}/posts/${id}/comments`, header)
+  const url = `${API}/posts/${id}/comments`;
+
+  return fetch(url, header)
     .then(res => res.json());
 }
 
-export function getCommentDetails(id) {
-  return fetch(`${API}/comments/${id}`, header)
+export function getComment(id) {
+  const url = `${API}/comments/${id}`;
+
+  return fetch(url, header)
     .then(res => res.json());
 }
 
