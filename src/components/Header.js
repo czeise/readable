@@ -1,27 +1,47 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Navbar, Nav, NavItem, PageHeader } from 'react-bootstrap';
+import { connect } from 'react-redux';
+import { fetchCategories } from '../actions';
 
 class Header extends Component {
-  // const {selectedCategory} = props;
+  componentDidMount() {
+    const { fetchCategories } = this.props;
+    fetchCategories();
+  }
 
   render() {
+    const { categories } = this.props;
     return(
       <div>
         <Navbar inverse>
           <Nav>
             <NavItem>Home</NavItem>
-            <NavItem className='active'>React</NavItem>
+            {categories.map((category) => (
+              <NavItem>{category.name}</NavItem>
+            ))}
           </Nav>
         </Navbar>
-        <PageHeader>Readable <small>React</small></PageHeader>
+        {/* TODO: use route to populate or create a 'selectedCategory' item in state */}
+        <PageHeader>Readable <small>react</small></PageHeader>
       </div>
     );
   }
 }
 
-// Header.propTypes = {
-//   selectedCategory: PropTypes.string.isRequired
-// };
+Header.propTypes = {
+  categories: PropTypes.array.isRequired
+};
 
-export default Header;
+function mapStateToProps(state) {
+  const { categories } = state;
+  return { categories };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    fetchCategories: () => dispatch(fetchCategories())
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Header);
