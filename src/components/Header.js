@@ -11,7 +11,7 @@ class Header extends Component {
   }
 
   render() {
-    const { categories } = this.props;
+    const { categories, selectedCategory } = this.props;
     return(
       <div>
         <Navbar inverse>
@@ -23,14 +23,15 @@ class Header extends Component {
           </Nav>
         </Navbar>
         {/* TODO: use route to populate or create a 'selectedCategory' item in state */}
-        <PageHeader>Readable <small>react</small></PageHeader>
+        <PageHeader>Readable <small>{selectedCategory}</small></PageHeader>
       </div>
     );
   }
 }
 
 Header.propTypes = {
-  categories: PropTypes.array.isRequired
+  categories: PropTypes.array.isRequired,
+  selectedCategory: PropTypes.string.isRequired
 };
 
 function mapStateToProps(state) {
