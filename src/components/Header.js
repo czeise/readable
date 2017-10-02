@@ -18,7 +18,7 @@ class Header extends Component {
           <Nav>
             <NavItem>Home</NavItem>
             {categories.map((category) => (
-              <NavItem>{category.name}</NavItem>
+              <NavItem key={category.name}>{category.name}</NavItem>
             ))}
           </Nav>
         </Navbar>
