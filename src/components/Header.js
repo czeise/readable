@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Navbar, Nav, NavItem, PageHeader } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { fetchCategories } from '../actions';
+import { IndexLinkContainer, LinkContainer } from 'react-router-bootstrap';
 
 class Header extends Component {
   componentDidMount() {
@@ -14,15 +15,21 @@ class Header extends Component {
     const { categories, selectedCategory } = this.props;
     return(
       <div>
-        <Navbar inverse>
-          <Nav>
-            <NavItem>Home</NavItem>
-            {categories.map((category) => (
-              <NavItem key={category.name}>{category.name}</NavItem>
-            ))}
-          </Nav>
+        <Navbar inverse collapseOnSelect>
+          <Navbar.Header>
+            <IndexLinkContainer to='/'><Navbar.Brand>Home</Navbar.Brand></IndexLinkContainer>
+            <Navbar.Toggle />
+          </Navbar.Header>
+          <Navbar.Collapse>
+            <Nav>
+              {categories.map((category) => (
+                <LinkContainer to={`/${category.name}`} key={category.name}>
+                  <NavItem>{category.name}</NavItem>
+                </LinkContainer>
+              ))}
+            </Nav>
+          </Navbar.Collapse>
         </Navbar>
-        {/* TODO: use route to populate or create a 'selectedCategory' item in state */}
         <PageHeader>Readable <small>{selectedCategory}</small></PageHeader>
       </div>
     );

@@ -12,9 +12,9 @@ class App extends Component {
           <Header selectedCategory=''/>
         )}/>
         <Route path='/:category' render={({ match }) => (
-          // This isn't really what I want to do here, but it's OK for now
-          // This will always render the page...I'd prefer to only allow pages that match a category
+          // This will always render the header, even if the category doesn't exist
           <Header selectedCategory={match.params.category}/>
+          // TODO: For other component(s), only display if category exists...
         )}/>
       </Grid>
     );
