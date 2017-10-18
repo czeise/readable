@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
 
-import { RECEIVE_CATEGORIES } from '../actions';
+import { RECEIVE_CATEGORIES, RECEIVE_POSTS } from '../actions';
 
 function categories(state = [], action) {
   const { categories } = action;
@@ -13,4 +13,19 @@ function categories(state = [], action) {
   }
 }
 
-export default combineReducers({ categories });
+function posts(state = [], action) {
+  let { posts } = action;
+  console.log(`posts reducer input posts: ${posts}`);
+
+  switch (action.type) {
+    case RECEIVE_POSTS:
+      if (posts === undefined) {
+        posts = [];
+      }
+      return posts;
+    default:
+      return state;
+  }
+}
+
+export default combineReducers({ categories, posts });
