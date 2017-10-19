@@ -1,6 +1,12 @@
 import { combineReducers } from 'redux';
 
-import { RECEIVE_CATEGORIES, RECEIVE_POSTS } from '../actions';
+import {
+  RECEIVE_CATEGORIES,
+  RECEIVE_POSTS,
+  SORT_BY_VOTES,
+  SORT_BY_NEWEST,
+  SORT_BY_OLDEST
+} from '../actions';
 
 function categories(state = [], action) {
   const { categories } = action;
@@ -15,7 +21,7 @@ function categories(state = [], action) {
 
 function posts(state = [], action) {
   let { posts } = action;
-  console.log(`posts reducer input posts: ${posts}`);
+  console.log(`action.type: ${action.type}`);
 
   switch (action.type) {
     case RECEIVE_POSTS:
@@ -23,6 +29,19 @@ function posts(state = [], action) {
         posts = [];
       }
       return posts;
+    case SORT_BY_VOTES:
+      return state.sort(function(a, b) {
+        return b.votes - a.votes;
+      });
+    case SORT_BY_NEWEST:
+      const newState = state;
+      return newState.sort(function(a, b) {
+        return b.timestamp - a.timestamp;
+      });
+    case SORT_BY_OLDEST:
+      return state.sort(function(a, b) {
+        return a.timestamp - b.timestamp;
+      });
     default:
       return state;
   }
