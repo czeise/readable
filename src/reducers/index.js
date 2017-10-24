@@ -20,26 +20,23 @@ function categories(state = [], action) {
 }
 
 function posts(state = [], action) {
-  let { posts } = action;
-  console.log(`action.type: ${action.type}`);
-
-  switch (action.type) {
+  let { type, posts } = action;
+  switch (type) {
     case RECEIVE_POSTS:
       if (posts === undefined) {
         posts = [];
       }
       return posts;
     case SORT_BY_VOTES:
-      return state.sort(function(a, b) {
-        return b.votes - a.votes;
+      return [...state].sort(function(a, b) {
+        return b.voteScore - a.voteScore;
       });
     case SORT_BY_NEWEST:
-      const newState = state;
-      return newState.sort(function(a, b) {
+      return [...state].sort(function(a, b) {
         return b.timestamp - a.timestamp;
       });
     case SORT_BY_OLDEST:
-      return state.sort(function(a, b) {
+      return [...state].sort(function(a, b) {
         return a.timestamp - b.timestamp;
       });
     default:

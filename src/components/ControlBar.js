@@ -1,16 +1,18 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { sortByNewest } from '../actions';
+import { sortByVotes, sortByNewest, sortByOldest } from '../actions';
+import { Button } from 'react-bootstrap';
 
 class ControlBar extends Component {
   render() {
-    const { sortByNewest } = this.props;
+    const { sortByVotes, sortByNewest, sortByOldest } = this.props;
 
     return(
       <div>
-        <span>
-          <a>Top</a> | <button onClick={() => sortByNewest()}>New</button> | Old</span>
+          <Button bsStyle='link' onClick={() => sortByVotes()}>Top</Button>
+          <Button bsStyle='link' onClick={() => sortByNewest()}>New</Button>
+          <Button bsStyle='link' onClick={() => sortByOldest()}>Old</Button>
         <span className='pull-right'>Add New Post</span>
       </div>
     );
@@ -27,7 +29,9 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    sortByNewest: () => dispatch(sortByNewest())
+    sortByVotes: () => dispatch(sortByVotes()),
+    sortByNewest: () => dispatch(sortByNewest()),
+    sortByOldest: () => dispatch(sortByOldest())
   };
 }
 
