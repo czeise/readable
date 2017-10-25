@@ -4,9 +4,10 @@ import { connect } from 'react-redux';
 
 class Post extends Component {
   render() {
+    const { post } = this.props;
     return(
       <div>
-        Post
+        Post with {post.voteScore} votes from {post.timestamp}
       </div>
     );
   }

@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import ControlBar from './ControlBar';
 import { fetchPosts } from '../actions';
 import Post from './Post';
+import { Panel, ListGroup, ListGroupItem } from 'react-bootstrap';
 
 class PostList extends Component {
   componentDidMount() {
@@ -21,12 +22,13 @@ class PostList extends Component {
   render() {
     const { posts } = this.props;
     return(
-      <div>
-        <ControlBar />
-        {posts.map((post) => (
-          <Post post={post} key={post.id}/>
-        ))}
-      </div>
+      <Panel header={<ControlBar />}>
+        <ListGroup fill>
+          {posts.map((post) => (
+            <ListGroupItem key={post.id}><Post post={post}/></ListGroupItem>
+          ))}
+        </ListGroup>
+      </Panel>
     );
   }
 }
@@ -41,7 +43,7 @@ function mapStateToProps(state) {
   return { posts };
 }
 
-function mapDispatchToProps(dispatch, ownProps) {
+function mapDispatchToProps(dispatch) {
   return {
     fetchPosts: (selectedCategory) => dispatch(fetchPosts(selectedCategory))
   };
