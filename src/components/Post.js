@@ -5,17 +5,23 @@ import { Row, Col, ButtonGroup, Button, Glyphicon } from 'react-bootstrap';
 import Moment from 'moment';
 import Pluralize from 'pluralize';
 import { Link } from 'react-router-dom';
+import { postVote } from '../actions';
 
 class Post extends Component {
+  handleVote(vote) {
+    const { postVote, post } = this.props;
+    postVote(post.id, vote);
+  }
+
   render() {
     const { post } = this.props;
     return(
       <Row>
         <Col xs={3} sm={2} md={1}>
           <ButtonGroup vertical block bsSize='small'>
-            <Button><Glyphicon glyph='arrow-up' /></Button>
+            <Button onClick={() => this.handleVote('upVote')}><Glyphicon glyph='arrow-up' /></Button>
             <Button bsStyle='link' disabled>{post.voteScore}</Button>
-            <Button><Glyphicon glyph='arrow-down' /></Button>
+            <Button onClick={() => this.handleVote('downVote')}><Glyphicon glyph='arrow-down' /></Button>
           </ButtonGroup>
         </Col>
         <Col xs={9} sm={10} md={11}>
@@ -39,7 +45,9 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return {};
+  return {
+    postVote: (id, vote) => dispatch(postVote(id, vote))
+  };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Post);

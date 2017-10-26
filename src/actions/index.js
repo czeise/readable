@@ -5,6 +5,7 @@ export const RECEIVE_POSTS = 'RECEIVE_POSTS';
 export const SORT_BY_VOTES = 'SORT_BY_VOTES';
 export const SORT_BY_NEWEST = 'SORT_BY_NEWEST';
 export const SORT_BY_OLDEST = 'SORT_BY_OLDEST';
+export const POST_VOTE = 'POST_VOTE';
 
 export function receiveCategories(categories) {
   return {
@@ -28,7 +29,6 @@ export function receivePosts(posts) {
 }
 
 export function fetchPosts(category) {
-  console.log(`fetchPosts category: ${category}`);
   return dispatch => {
     return API.getPosts(category)
       .then(function(posts) {
@@ -55,5 +55,19 @@ export function sortByOldest(posts) {
   return {
     type: SORT_BY_OLDEST,
     posts
+  };
+}
+
+export function receiveVote(post) {
+  return {
+    type: POST_VOTE,
+    post
+  };
+}
+
+export function postVote(id, vote) {
+  return dispatch => {
+    return API.vote(id, vote)
+      .then(post => dispatch(receiveVote(post)));
   };
 }
