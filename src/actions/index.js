@@ -6,6 +6,7 @@ export const SORT_BY_VOTES = 'SORT_BY_VOTES';
 export const SORT_BY_NEWEST = 'SORT_BY_NEWEST';
 export const SORT_BY_OLDEST = 'SORT_BY_OLDEST';
 export const POST_VOTE = 'POST_VOTE';
+export const RECEIVE_POST = 'RECEIVE_POST';
 
 export function receiveCategories(categories) {
   return {
@@ -35,6 +36,22 @@ export function fetchPosts(category) {
         dispatch(receivePosts(posts));
       });
   };
+}
+
+export function receivePost(post) {
+  return {
+    type: RECEIVE_POST,
+    post
+  }
+}
+
+export function fetchPost(id) {
+  return dispatch => {
+    return API.getPost(id)
+      .then(function(post) {
+        dispatch(receivePost(post));
+      })
+  }
 }
 
 export function sortByVotes(posts) {

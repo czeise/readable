@@ -25,7 +25,7 @@ class PostList extends Component {
       <Panel header={<ControlBar />}>
         <ListGroup fill>
           {posts.map((post) => (
-            <ListGroupItem key={post.id}><Post post={post}/></ListGroupItem>
+            <ListGroupItem key={post.id}><Post post={post} detail={false}/></ListGroupItem>
           ))}
         </ListGroup>
       </Panel>

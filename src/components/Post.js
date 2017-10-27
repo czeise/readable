@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Row, Col, ButtonGroup, Button, Glyphicon } from 'react-bootstrap';
+import { Row, Col, ButtonGroup, Button, Glyphicon, FormControl } from 'react-bootstrap';
 import Moment from 'moment';
 import Pluralize from 'pluralize';
 import { Link } from 'react-router-dom';
@@ -14,7 +14,7 @@ class Post extends Component {
   }
 
   render() {
-    const { post } = this.props;
+    const { post, detail } = this.props;
     return(
       <Row>
         <Col xs={3} sm={2} md={1}>
@@ -27,6 +27,11 @@ class Post extends Component {
         <Col xs={9} sm={10} md={11}>
           <h4>{post.title}</h4>
           <div>submitted {Moment(post.timestamp).fromNow()} by {post.author}</div>
+          {detail && (
+            <form>
+              <FormControl componentClass='textarea' value={post.body} disabled />
+            </form>
+          )}
           <strong>
             <Link to={`/${post.category}/${post.id}`}>{Pluralize('comment', post.commentCount, true)}</Link> <Link to={`/${post.category}/${post.id}`}>edit</Link> delete
           </strong>
@@ -37,7 +42,8 @@ class Post extends Component {
 }
 
 Post.propTypes = {
-  post: PropTypes.object.isRequired
+  post: PropTypes.object.isRequired,
+  detail: PropTypes.bool.isRequired
 };
 
 function mapStateToProps(state) {
