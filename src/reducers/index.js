@@ -5,7 +5,8 @@ import {
   RECEIVE_POSTS,
   SORT_BY_VOTES,
   SORT_BY_NEWEST,
-  SORT_BY_OLDEST
+  SORT_BY_OLDEST,
+  POST_VOTE
 } from '../actions';
 
 function categories(state = [], action) {
@@ -20,7 +21,7 @@ function categories(state = [], action) {
 }
 
 function posts(state = [], action) {
-  let { type, posts } = action;
+  let { type, posts, post } = action;
   switch (type) {
     case RECEIVE_POSTS:
       if (posts === undefined) {
@@ -39,6 +40,8 @@ function posts(state = [], action) {
       return [...state].sort(function(a, b) {
         return a.timestamp - b.timestamp;
       });
+    case POST_VOTE:
+      return state.map(oldPost => oldPost.id === post.id ? post : oldPost);
     default:
       return state;
   }

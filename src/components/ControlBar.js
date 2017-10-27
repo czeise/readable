@@ -24,6 +24,7 @@ class ControlBar extends Component {
 }
 
 ControlBar.propTypes = {
+  posts: PropTypes.array.isRequired
 };
 
 function mapStateToProps(state) {
