@@ -28,7 +28,7 @@ class Post extends Component {
           <h4>{post.title}</h4>
           <div>submitted {Moment(post.timestamp).fromNow()} by {post.author}</div>
           <strong>
-            {Pluralize('comment', post.commentCount, true)} <Link to={`/${post.category}/${post.id}`}>edit</Link> delete
+            <Link to={`/${post.category}/${post.id}`}>{Pluralize('comment', post.commentCount, true)}</Link> <Link to={`/${post.category}/${post.id}`}>edit</Link> delete
           </strong>
         </Col>
       </Row>
