@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { sortByVotes, sortByNewest, sortByOldest } from '../actions';
-import { Button } from 'react-bootstrap';
-import { IndexLinkContainer } from 'react-router-bootstrap';
+import { Button, ButtonToolbar } from 'react-bootstrap';
+import { LinkContainer } from 'react-router-bootstrap';
 
 class ControlBar extends Component {
   render() {
@@ -11,13 +11,15 @@ class ControlBar extends Component {
 
     return(
       <div>
-        <Button bsStyle='link' onClick={() => sortByVotes()}>Top</Button>
-        <Button bsStyle='link' onClick={() => sortByNewest()}>New</Button>
-        <Button bsStyle='link' onClick={() => sortByOldest()}>Old</Button>
+        <ButtonToolbar>
+          <Button bsStyle='link' onClick={() => sortByVotes()}>Top</Button>
+          <Button bsStyle='link' onClick={() => sortByNewest()}>New</Button>
+          <Button bsStyle='link' onClick={() => sortByOldest()}>Old</Button>
 
-        <IndexLinkContainer to='/new'>
-          <Button className='pull-right' bsStyle='link'>Add New Post</Button>
-        </IndexLinkContainer>
+          <LinkContainer to='/new'>
+            <Button className='pull-right' bsStyle='link'>Add New Post</Button>
+          </LinkContainer>
+        </ButtonToolbar>
       </div>
     );
   }
