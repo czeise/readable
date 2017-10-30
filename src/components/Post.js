@@ -2,28 +2,32 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
-  Row, Col, ButtonGroup, Button, Glyphicon, FormControl, FormGroup, ButtonToolbar
+  Row, Col, ButtonGroup, Button, Glyphicon, FormControl, FormGroup, ButtonToolbar, Panel, ListGroup, ListGroupItem
 } from 'react-bootstrap';
 import Moment from 'moment';
 import Pluralize from 'pluralize';
-import { postVote, editPost } from '../actions';
+import { postVote, editPost, fetchComments } from '../actions';
 import { LinkContainer } from 'react-router-bootstrap';
+import Comment from './Comment';
 
 class Post extends Component {
   constructor(props) {
     super(props);
     this.state = {
       editMode: false,
-      body: props.post.body
-    }
+      body: props.post.body,
+      loading: false
+    };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
   }
-  // state = {
-  //   editEnabled: false,
-  //   value: this.props.post.body
-  // }
+
+  componentDidMount() {
+    const { fetchComments, post } = this.props;
+    console.log('mounted');
+    fetchComments(post.id);
+  }
 
   handleVote(vote) {
     const { postVote, post } = this.props;
@@ -54,50 +58,67 @@ class Post extends Component {
   }
 
   render() {
-    const { post, detail } = this.props;
+    const { post, detail, comments } = this.props;
+    const id = post.id;
     return(
-      <Row>
-        <Col xs={3} sm={2} md={1}>
-          <ButtonGroup vertical block bsSize='small'>
-            <Button onClick={() => this.handleVote('upVote')}><Glyphicon glyph='arrow-up' /></Button>
-            <Button bsStyle='link' disabled>{post.voteScore}</Button>
-            <Button onClick={() => this.handleVote('downVote')}><Glyphicon glyph='arrow-down' /></Button>
-          </ButtonGroup>
-        </Col>
-        <Col xs={9} sm={10} md={11}>
-          <h4>{post.title}</h4>
-          <p>submitted {Moment(post.timestamp).fromNow()} by {post.author}</p>
-          {detail && (
-            <form>
-              <FormGroup>
-                <FormControl
-                  componentClass='textarea'
-                  value={this.state.body}
-                  disabled={!this.state.editMode}
-                  onChange={this.handleChange}
-                />
-              </FormGroup>
-              <ButtonToolbar hidden={!this.state.editMode}>
-                <Button onClick={this.handleEdit}>save</Button>
-                <Button onClick={this.disableEdit}>cancel</Button>
-              </ButtonToolbar>
-            </form>
-          )}
-          <ButtonToolbar>
-            <LinkContainer to={`/${post.category}/${post.id}`}>
-              <Button bsStyle='link'>{Pluralize('comment', post.commentCount, true)}</Button>
-            </LinkContainer>
-            {detail ? (
-              <Button bsStyle='link' onClick={this.enableEdit}>edit</Button>
-            ) : (
-              <LinkContainer to={`/${post.category}/${post.id}`}>
-                <Button bsStyle='link'>edit</Button>
-              </LinkContainer>
+      <div>
+        <Row>
+          <Col xs={3} sm={2} md={1}>
+            <ButtonGroup vertical block bsSize='small'>
+              <Button onClick={() => this.handleVote('upVote')}><Glyphicon glyph='arrow-up' /></Button>
+              <Button bsStyle='link' disabled>{post.voteScore}</Button>
+              <Button onClick={() => this.handleVote('downVote')}><Glyphicon glyph='arrow-down' /></Button>
+            </ButtonGroup>
+          </Col>
+          <Col xs={9} sm={10} md={11}>
+            <h4>{post.title}</h4>
+            <p>submitted {Moment(post.timestamp).fromNow()} by {post.author}</p>
+            {detail && (
+              <form>
+                <FormGroup>
+                  <FormControl
+                    componentClass='textarea'
+                    value={this.state.body}
+                    disabled={!this.state.editMode}
+                    onChange={this.handleChange}
+                  />
+                </FormGroup>
+                <ButtonToolbar hidden={!this.state.editMode}>
+                  <Button onClick={this.handleEdit}>save</Button>
+                  <Button onClick={this.disableEdit}>cancel</Button>
+                </ButtonToolbar>
+              </form>
             )}
-            <Button bsStyle='link'>delete</Button>
-          </ButtonToolbar>
-        </Col>
-      </Row>
+            <ButtonToolbar>
+              <LinkContainer to={`/${post.category}/${post.id}`}>
+                <Button bsStyle='link'>{Pluralize('comment', post.commentCount, true)}</Button>
+              </LinkContainer>
+              {detail ? (
+                <Button bsStyle='link' onClick={this.enableEdit}>edit</Button>
+              ) : (
+                <LinkContainer to={`/${post.category}/${post.id}`}>
+                  <Button bsStyle='link'>edit</Button>
+                </LinkContainer>
+              )}
+              <Button bsStyle='link'>delete</Button>
+            </ButtonToolbar>
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={9} xsOffset={3} sm={10} smOffset={2} md={11} mdOffset={1}>
+            <Panel header={`all ${Pluralize('comments', post.commentCount, true)}`}>
+              <ListGroup fill>
+                {comments[id] && console.log(comments[id])}
+                {comments[post.id] && comments[post.id].map((comment) => (
+                  <ListGroupItem key={comment.id}>
+                    <Comment comment={comment} />
+                  </ListGroupItem>
+                ))}
+              </ListGroup>
+            </Panel>
+          </Col>
+        </Row>
+      </div>
     );
   }
 }
@@ -108,13 +129,15 @@ Post.propTypes = {
 };
 
 function mapStateToProps(state) {
-  return {};
+  const { comments } = state;
+  return { comments };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     postVote: (id, vote) => dispatch(postVote(id, vote)),
-    editPost: (id, title, body) => dispatch(editPost(id, title, body))
+    editPost: (id, title, body) => dispatch(editPost(id, title, body)),
+    fetchComments: (id) => dispatch(fetchComments(id))
   };
 }
 

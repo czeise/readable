@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Post from './Post';
-import { Panel, ListGroup, ListGroupItem } from 'react-bootstrap';
 import { fetchPost } from '../actions';
 
 class PostDetail extends Component {

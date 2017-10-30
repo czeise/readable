@@ -7,7 +7,8 @@ import {
   SORT_BY_NEWEST,
   SORT_BY_OLDEST,
   RECEIVE_POST,
-  UPDATE_POST
+  UPDATE_POST,
+  RECEIVE_COMMENTS
 } from '../actions';
 
 function categories(state = [], action) {
@@ -47,11 +48,21 @@ function posts(state = [], action) {
       if (state.includes(post)) {
         return state.map(oldPost => oldPost.id === post.id ? post : oldPost);
       } else {
-        return [...state, post]
+        return [...state, post];
       }
     default:
       return state;
   }
 }
 
-export default combineReducers({ categories, posts });
+function comments(state = {}, action) {
+  let { type, id, comments } = action;
+  switch (type) {
+    case RECEIVE_COMMENTS:
+      return { ...state, [id]: comments };
+    default:
+      return state;
+  }
+}
+
+export default combineReducers({ categories, posts, comments });

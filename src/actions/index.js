@@ -7,6 +7,7 @@ export const SORT_BY_NEWEST = 'SORT_BY_NEWEST';
 export const SORT_BY_OLDEST = 'SORT_BY_OLDEST';
 export const RECEIVE_POST = 'RECEIVE_POST';
 export const UPDATE_POST = 'UPDATE_POST';
+export const RECEIVE_COMMENTS = 'RECEIVE_COMMENTS';
 
 export function receiveCategories(categories) {
   return {
@@ -38,11 +39,29 @@ export function fetchPosts(category) {
   };
 }
 
+export function receiveComments(id, comments) {
+  return {
+    type: RECEIVE_COMMENTS,
+    id,
+    comments
+  };
+}
+
+export function fetchComments(id) {
+  console.log(`fetchComments for: ${id}`);
+  return dispatch => {
+    return API.getComments(id)
+      .then(function(comments) {
+        dispatch(receiveComments(id, comments));
+      });
+  };
+}
+
 export function receivePost(post) {
   return {
     type: RECEIVE_POST,
     post
-  }
+  };
 }
 
 export function fetchPost(id) {
