@@ -69,8 +69,8 @@ export function fetchPost(id) {
     return API.getPost(id)
       .then(function(post) {
         dispatch(receivePost(post));
-      })
-  }
+      });
+  };
 }
 
 export function sortByVotes(posts) {
@@ -112,5 +112,12 @@ export function editPost(id, title, body) {
   return dispatch => {
     return API.editPost(id, title, body)
       .then(post => dispatch(updatePost(post)));
+  };
+}
+
+export function newComment(body, author, parentId) {
+  return dispatch => {
+    return API.newComment(body, author, parentId)
+      .then(() => dispatch(fetchComments(parentId)));
   };
 }

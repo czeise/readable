@@ -1,3 +1,5 @@
+import uuid from 'uuid/v4';
+
 const AUTHORIZATION = process.env.READABLE_SERVER_AUTHORIZATION;
 const API = 'http://localhost:3001';
 
@@ -61,6 +63,19 @@ export function editPost(id, title, body) {
       method: 'PUT',
       headers: { ...headers, 'Content-Type': 'application/json' },
       body: JSON.stringify({ title: title, body: body })
+    }
+  ).then(res => res.json());
+}
+
+export function newComment(body, author, parentId) {
+  const url = `${API}/comments`;
+
+  return fetch(
+    url,
+    {
+      method: 'POST',
+      headers: { ...headers, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: uuid(), parentId: parentId, author: author, body: body })
     }
   ).then(res => res.json());
 }

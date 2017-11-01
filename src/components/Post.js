@@ -6,7 +6,7 @@ import {
 } from 'react-bootstrap';
 import Moment from 'moment';
 import Pluralize from 'pluralize';
-import { postVote, editPost, fetchComments } from '../actions';
+import { postVote, editPost, fetchComments, newComment } from '../actions';
 import { LinkContainer } from 'react-router-bootstrap';
 import Comment from './Comment';
 
@@ -16,11 +16,15 @@ class Post extends Component {
     this.state = {
       editMode: false,
       body: props.post.body,
-      loading: false
+      commentBody: '',
+      commentAuthor: ''
     };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
+    this.handleCommentChange = this.handleCommentChange.bind(this);
+    this.handleCommentAuthorChance = this.handleCommentAuthorChance.bind(this);
+    this.handleSaveComment = this.handleSaveComment.bind(this);
   }
 
   componentDidMount() {
@@ -36,6 +40,14 @@ class Post extends Component {
 
   handleChange(event) {
     this.setState({ body: event.target.value });
+  }
+
+  handleCommentAuthorChance(event) {
+    this.setState({ commentAuthor: event.target.value });
+  }
+
+  handleCommentChange(event) {
+    this.setState({ commentBody: event.target.value });
   }
 
   handleEdit() {
@@ -57,9 +69,18 @@ class Post extends Component {
      });
   }
 
+  handleSaveComment() {
+    // TODO: method....
+    const { newComment, post } = this.props;
+    const { commentAuthor, commentBody } = this.state;
+
+    newComment(commentBody, commentAuthor, post.id);
+    this.setState({ commentAuthor: '', commentBody: '' });
+  }
+
   render() {
     const { post, detail, comments } = this.props;
-    const id = post.id;
+    const { editMode, body, commentAuthor, commentBody } = this.state;
     return(
       <div>
         <Row>
@@ -78,12 +99,12 @@ class Post extends Component {
                 <FormGroup>
                   <FormControl
                     componentClass='textarea'
-                    value={this.state.body}
-                    disabled={!this.state.editMode}
+                    value={body}
+                    disabled={!editMode}
                     onChange={this.handleChange}
                   />
                 </FormGroup>
-                <ButtonToolbar hidden={!this.state.editMode}>
+                <ButtonToolbar hidden={!editMode}>
                   <Button onClick={this.handleEdit}>save</Button>
                   <Button onClick={this.disableEdit}>cancel</Button>
                 </ButtonToolbar>
@@ -104,20 +125,46 @@ class Post extends Component {
             </ButtonToolbar>
           </Col>
         </Row>
-        <Row>
-          <Col xs={9} xsOffset={3} sm={10} smOffset={2} md={11} mdOffset={1}>
-            <Panel header={`all ${Pluralize('comments', post.commentCount, true)}`}>
-              <ListGroup fill>
-                {comments[id] && console.log(comments[id])}
-                {comments[post.id] && comments[post.id].map((comment) => (
-                  <ListGroupItem key={comment.id}>
-                    <Comment comment={comment} />
+        <hr/>
+        {detail &&
+          <Row>
+            <Col xs={9} xsOffset={3} sm={10} smOffset={2} md={11} mdOffset={1}>
+              <Panel header={`all ${Pluralize('comments', post.commentCount, true)}`}>
+                <ListGroup fill>
+                  <ListGroupItem>
+                    <form>
+                      <FormGroup>
+                        <FormControl
+                          type='text'
+                          placeholder='username'
+                          value={commentAuthor}
+                          onChange={this.handleCommentAuthorChance}
+                        />
+                      </FormGroup>
+                      <FormGroup>
+                        <FormControl
+                          componentClass='textarea'
+                          value={commentBody}
+                          onChange={this.handleCommentChange}
+                          placeholder='comment'
+                        />
+                      </FormGroup>
+                      <ButtonToolbar>
+                        {/* TODO: Handle comment functionality... */}
+                        <Button onClick={this.handleSaveComment}>save</Button>
+                      </ButtonToolbar>
+                    </form>
                   </ListGroupItem>
-                ))}
-              </ListGroup>
-            </Panel>
-          </Col>
-        </Row>
+                  {comments[post.id] && comments[post.id].map((comment) => (
+                    <ListGroupItem key={comment.id}>
+                      <Comment comment={comment} />
+                    </ListGroupItem>
+                  ))}
+                </ListGroup>
+              </Panel>
+            </Col>
+          </Row>
+        }
       </div>
     );
   }
@@ -137,7 +184,8 @@ function mapDispatchToProps(dispatch) {
   return {
     postVote: (id, vote) => dispatch(postVote(id, vote)),
     editPost: (id, title, body) => dispatch(editPost(id, title, body)),
-    fetchComments: (id) => dispatch(fetchComments(id))
+    fetchComments: (id) => dispatch(fetchComments(id)),
+    newComment: (body, author, parentId) => dispatch(newComment(body, author, parentId))
   };
 }
 

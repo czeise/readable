@@ -58,6 +58,7 @@ class Comment extends Component {
       <Row>
         <Col xs={3} sm={2} md={1}>
           <ButtonGroup vertical block bsSize='small'>
+            {/* TODO: Handle comment votes */}
             <Button><Glyphicon glyph='arrow-up' /></Button>
             <Button><Glyphicon glyph='arrow-down' /></Button>
           </ButtonGroup>
