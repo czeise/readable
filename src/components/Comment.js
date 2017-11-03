@@ -6,27 +6,23 @@ import {
 } from 'react-bootstrap';
 import Moment from 'moment';
 import Pluralize from 'pluralize';
-import { postVote, editPost } from '../actions';
-import { LinkContainer } from 'react-router-bootstrap';
+import { commentVote, editComment } from '../actions';
 
 class Comment extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      editMode: false
-    }
+      editMode: false,
+      body: props.comment.body
+    };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
   }
-  // state = {
-  //   editEnabled: false,
-  //   value: this.props.post.body
-  // }
 
   handleVote(vote) {
-    const { postVote, post } = this.props;
-    postVote(post.id, vote);
+    const { commentVote, comment } = this.props;
+    commentVote(comment.id, vote);
   }
 
   handleChange(event) {
@@ -34,9 +30,9 @@ class Comment extends Component {
   }
 
   handleEdit() {
-    const { editPost, post } = this.props;
+    const { editComment, comment } = this.props;
     const { body } = this.state;
-    editPost(post.id, post.title, body);
+    editComment(comment.id, body);
     this.setState({ editMode: false });
   }
 
@@ -45,7 +41,7 @@ class Comment extends Component {
   }
 
   disableEdit = () => {
-    const { body } = this.props.post;
+    const { body } = this.props.comment;
     this.setState({
       editMode: false,
       body: body
@@ -54,18 +50,32 @@ class Comment extends Component {
 
   render() {
     const { comment } = this.props;
+    const { editMode, body } = this.state;
     return(
       <Row>
         <Col xs={3} sm={2} md={1}>
           <ButtonGroup vertical block bsSize='small'>
             {/* TODO: Handle comment votes */}
-            <Button><Glyphicon glyph='arrow-up' /></Button>
-            <Button><Glyphicon glyph='arrow-down' /></Button>
+            <Button onClick={() => this.handleVote('upVote')}><Glyphicon glyph='arrow-up' /></Button>
+            <Button onClick={() => this.handleVote('downVote')}><Glyphicon glyph='arrow-down' /></Button>
           </ButtonGroup>
         </Col>
         <Col xs={6} sm={7} md={8}>
           <p>{comment.author} {Pluralize('points', comment.voteScore, true)} {Moment(comment.timestamp).fromNow()}</p>
-          <p>{comment.body}</p>
+          <form>
+            <FormGroup>
+              <FormControl
+                componentClass='textarea'
+                value={body}
+                disabled={!editMode}
+                onChange={this.handleChange}
+              />
+            </FormGroup>
+            <ButtonToolbar hidden={!editMode}>
+              <Button onClick={this.handleEdit}>save</Button>
+              <Button onClick={this.disableEdit}>cancel</Button>
+            </ButtonToolbar>
+          </form>
 
           <ButtonToolbar>
             <Button bsStyle='link' onClick={this.enableEdit}>edit</Button>
@@ -78,19 +88,14 @@ class Comment extends Component {
 }
 
 Comment.propTypes = {
-  // post: PropTypes.object.isRequired,
-  // detail: PropTypes.bool.isRequired
+  comment: PropTypes.object.isRequired
 };
-
-function mapStateToProps(state) {
-  return {};
-}
 
 function mapDispatchToProps(dispatch) {
   return {
-    postVote: (id, vote) => dispatch(postVote(id, vote)),
-    editPost: (id, title, body) => dispatch(editPost(id, title, body))
+    commentVote: (id, vote) => dispatch(commentVote(id, vote)),
+    editComment: (id, body) => dispatch(editComment(id, body))
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Comment);
+export default connect(null, mapDispatchToProps)(Comment);

@@ -41,8 +41,8 @@ export function getComment(id) {
     .then(res => res.json());
 }
 
-export function vote(id, vote) {
-  const url = `${API}/posts/${id}`;
+export function vote(type, id, vote) {
+  const url = `${API}/${type}/${id}`;
 
   return fetch(
     url,
@@ -75,7 +75,20 @@ export function newComment(body, author, parentId) {
     {
       method: 'POST',
       headers: { ...headers, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: uuid(), parentId: parentId, author: author, body: body })
+      body: JSON.stringify({ id: uuid(), timestamp: Date.now(), parentId: parentId, author: author, body: body })
+    }
+  ).then(res => res.json());
+}
+
+export function editComment(id, body) {
+  const url = `${API}/comments/${id}`;
+
+  return fetch(
+    url,
+    {
+      method: 'PUT',
+      headers: { ...headers, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ timestamp: Date.now(), body: body })
     }
   ).then(res => res.json());
 }
