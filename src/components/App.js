@@ -3,6 +3,7 @@ import { Grid } from 'react-bootstrap';
 import { Route, Switch } from 'react-router-dom';
 import Header from './Header';
 import PostList from './PostList';
+import PostDetail from './PostDetail';
 
 class App extends Component {
   render() {
@@ -15,16 +16,25 @@ class App extends Component {
               <PostList />
             </div>
           )}/>
+
           <Route exact path='/new' render={() => (
             <div>
             </div>
           )}/>
-          <Route path='/:category' render={({ match }) => (
+
+          <Route exact path='/:category' render={({ match }) => (
             <div>
               {/* This will always render the header, even if the category doesn't exist */}
               <Header selectedCategory={match.params.category}/>
               {/* TODO: For other component(s), only display if category exists... */}
               <PostList selectedCategory={match.params.category}/>
+            </div>
+          )}/>
+
+          <Route exact path='/:category/:id' render={({ match }) => (
+            <div>
+              <Header selectedCategory={match.params.category}/>
+              <PostDetail id={match.params.id}/>
             </div>
           )}/>
         </Switch>

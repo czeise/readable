@@ -5,7 +5,9 @@ export const RECEIVE_POSTS = 'RECEIVE_POSTS';
 export const SORT_BY_VOTES = 'SORT_BY_VOTES';
 export const SORT_BY_NEWEST = 'SORT_BY_NEWEST';
 export const SORT_BY_OLDEST = 'SORT_BY_OLDEST';
-export const POST_VOTE = 'POST_VOTE';
+export const RECEIVE_POST = 'RECEIVE_POST';
+export const UPDATE_POST = 'UPDATE_POST';
+export const RECEIVE_COMMENTS = 'RECEIVE_COMMENTS';
 
 export function receiveCategories(categories) {
   return {
@@ -37,6 +39,39 @@ export function fetchPosts(category) {
   };
 }
 
+export function receiveComments(id, comments) {
+  return {
+    type: RECEIVE_COMMENTS,
+    id,
+    comments
+  };
+}
+
+export function fetchComments(id) {
+  return dispatch => {
+    return API.getComments(id)
+      .then(function(comments) {
+        dispatch(receiveComments(id, comments));
+      });
+  };
+}
+
+export function receivePost(post) {
+  return {
+    type: RECEIVE_POST,
+    post
+  };
+}
+
+export function fetchPost(id) {
+  return dispatch => {
+    return API.getPost(id)
+      .then(function(post) {
+        dispatch(receivePost(post));
+      });
+  };
+}
+
 export function sortByVotes(posts) {
   return {
     type: SORT_BY_VOTES,
@@ -58,9 +93,9 @@ export function sortByOldest(posts) {
   };
 }
 
-export function receiveVote(post) {
+export function updatePost(post) {
   return {
-    type: POST_VOTE,
+    type: UPDATE_POST,
     post
   };
 }
@@ -68,6 +103,20 @@ export function receiveVote(post) {
 export function postVote(id, vote) {
   return dispatch => {
     return API.vote(id, vote)
-      .then(post => dispatch(receiveVote(post)));
+      .then(post => dispatch(updatePost(post)));
+  };
+}
+
+export function editPost(id, title, body) {
+  return dispatch => {
+    return API.editPost(id, title, body)
+      .then(post => dispatch(updatePost(post)));
+  };
+}
+
+export function newComment(body, author, parentId) {
+  return dispatch => {
+    return API.newComment(body, author, parentId)
+      .then(() => dispatch(fetchComments(parentId)));
   };
 }
