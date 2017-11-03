@@ -78,8 +78,8 @@ class Comment extends Component {
 }
 
 Comment.propTypes = {
-  post: PropTypes.object.isRequired,
-  detail: PropTypes.bool.isRequired
+  // post: PropTypes.object.isRequired,
+  // detail: PropTypes.bool.isRequired
 };
 
 function mapStateToProps(state) {

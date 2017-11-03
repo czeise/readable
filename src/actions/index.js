@@ -48,7 +48,6 @@ export function receiveComments(id, comments) {
 }
 
 export function fetchComments(id) {
-  console.log(`fetchComments for: ${id}`);
   return dispatch => {
     return API.getComments(id)
       .then(function(comments) {

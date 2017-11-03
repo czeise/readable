@@ -17,7 +17,8 @@ class Post extends Component {
       editMode: false,
       body: props.post.body,
       commentBody: '',
-      commentAuthor: ''
+      commentAuthor: '',
+      commentCount: props.post.commentCount
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -29,7 +30,6 @@ class Post extends Component {
 
   componentDidMount() {
     const { fetchComments, post } = this.props;
-    console.log('mounted');
     fetchComments(post.id);
   }
 
@@ -70,17 +70,16 @@ class Post extends Component {
   }
 
   handleSaveComment() {
-    // TODO: method....
     const { newComment, post } = this.props;
-    const { commentAuthor, commentBody } = this.state;
+    const { commentAuthor, commentBody, commentCount } = this.state;
 
     newComment(commentBody, commentAuthor, post.id);
-    this.setState({ commentAuthor: '', commentBody: '' });
+    this.setState({ commentAuthor: '', commentBody: '', commentCount: commentCount + 1 });
   }
 
   render() {
     const { post, detail, comments } = this.props;
-    const { editMode, body, commentAuthor, commentBody } = this.state;
+    const { editMode, body, commentAuthor, commentBody, commentCount } = this.state;
     return(
       <div>
         <Row>
@@ -112,7 +111,7 @@ class Post extends Component {
             )}
             <ButtonToolbar>
               <LinkContainer to={`/${post.category}/${post.id}`}>
-                <Button bsStyle='link'>{Pluralize('comment', post.commentCount, true)}</Button>
+                <Button bsStyle='link'>{Pluralize('comment', commentCount, true)}</Button>
               </LinkContainer>
               {detail ? (
                 <Button bsStyle='link' onClick={this.enableEdit}>edit</Button>
@@ -125,45 +124,46 @@ class Post extends Component {
             </ButtonToolbar>
           </Col>
         </Row>
-        <hr/>
         {detail &&
-          <Row>
-            <Col xs={9} xsOffset={3} sm={10} smOffset={2} md={11} mdOffset={1}>
-              <Panel header={`all ${Pluralize('comments', post.commentCount, true)}`}>
-                <ListGroup fill>
-                  <ListGroupItem>
-                    <form>
-                      <FormGroup>
-                        <FormControl
-                          type='text'
-                          placeholder='username'
-                          value={commentAuthor}
-                          onChange={this.handleCommentAuthorChance}
-                        />
-                      </FormGroup>
-                      <FormGroup>
-                        <FormControl
-                          componentClass='textarea'
-                          value={commentBody}
-                          onChange={this.handleCommentChange}
-                          placeholder='comment'
-                        />
-                      </FormGroup>
-                      <ButtonToolbar>
-                        {/* TODO: Handle comment functionality... */}
-                        <Button onClick={this.handleSaveComment}>save</Button>
-                      </ButtonToolbar>
-                    </form>
-                  </ListGroupItem>
-                  {comments[post.id] && comments[post.id].map((comment) => (
-                    <ListGroupItem key={comment.id}>
-                      <Comment comment={comment} />
+          <div>
+            <hr/>
+            <Row>
+              <Col xs={9} xsOffset={3} sm={10} smOffset={2} md={11} mdOffset={1}>
+                <Panel header={`all ${Pluralize('comments', commentCount, true)}`}>
+                  <ListGroup fill>
+                    <ListGroupItem>
+                      <form>
+                        <FormGroup>
+                          <FormControl
+                            type='text'
+                            placeholder='username'
+                            value={commentAuthor}
+                            onChange={this.handleCommentAuthorChance}
+                          />
+                        </FormGroup>
+                        <FormGroup>
+                          <FormControl
+                            componentClass='textarea'
+                            value={commentBody}
+                            onChange={this.handleCommentChange}
+                            placeholder='comment'
+                          />
+                        </FormGroup>
+                        <ButtonToolbar>
+                          <Button onClick={this.handleSaveComment}>save</Button>
+                        </ButtonToolbar>
+                      </form>
                     </ListGroupItem>
-                  ))}
-                </ListGroup>
-              </Panel>
-            </Col>
-          </Row>
+                    {comments[post.id] && comments[post.id].map((comment) => (
+                      <ListGroupItem key={comment.id}>
+                        <Comment comment={comment} />
+                      </ListGroupItem>
+                    ))}
+                  </ListGroup>
+                </Panel>
+              </Col>
+            </Row>
+          </div>
         }
       </div>
     );
