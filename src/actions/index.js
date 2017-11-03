@@ -102,8 +102,8 @@ export function updatePost(post) {
 
 export function postVote(id, vote) {
   return dispatch => {
-    return API.vote(id, vote)
-      .then(post => dispatch(updatePost(post)));
+    return API.vote('posts', id, vote)
+      .then(res => dispatch(updatePost(res)));
   };
 }
 
@@ -118,5 +118,19 @@ export function newComment(body, author, parentId) {
   return dispatch => {
     return API.newComment(body, author, parentId)
       .then(() => dispatch(fetchComments(parentId)));
+  };
+}
+
+export function commentVote(id, vote) {
+  return dispatch => {
+    return API.vote('comments', id, vote)
+      .then(res => dispatch(fetchComments(res.parentId)));
+  };
+}
+
+export function editComment(id, body) {
+  return dispatch => {
+    return API.editComment(id, body)
+      .then(comment => dispatch(fetchComments(comment.parentId)));
   };
 }
