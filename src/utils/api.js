@@ -92,3 +92,23 @@ export function editComment(id, body) {
     }
   ).then(res => res.json());
 }
+
+export function addPost(title, body, author, category) {
+  const url = `${API}/posts`;
+
+  return fetch(
+    url,
+    {
+      method: 'POST',
+      headers: { ...headers, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        id: uuid(),
+        timestamp: Date.now(),
+        title: title,
+        body: body,
+        author: author,
+        category: category
+      })
+    }
+  );
+}

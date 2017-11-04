@@ -4,6 +4,7 @@ import { Route, Switch } from 'react-router-dom';
 import Header from './Header';
 import PostList from './PostList';
 import PostDetail from './PostDetail';
+import NewPost from './NewPost';
 
 class App extends Component {
   render() {
@@ -19,6 +20,8 @@ class App extends Component {
 
           <Route exact path='/new' render={() => (
             <div>
+              <Header selectedCategory='new'/>
+              <NewPost />
             </div>
           )}/>
 
