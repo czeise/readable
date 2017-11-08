@@ -8,6 +8,7 @@ export const SORT_BY_OLDEST = 'SORT_BY_OLDEST';
 export const RECEIVE_POST = 'RECEIVE_POST';
 export const UPDATE_POST = 'UPDATE_POST';
 export const RECEIVE_COMMENTS = 'RECEIVE_COMMENTS';
+export const DELETE_POST = 'DELETE_POST';
 
 export function receiveCategories(categories) {
   return {
@@ -132,5 +133,19 @@ export function editComment(id, body) {
   return dispatch => {
     return API.editComment(id, body)
       .then(comment => dispatch(fetchComments(comment.parentId)));
+  };
+}
+
+export function deletePost(id, selectedCategory) {
+  return dispatch => {
+    return API.deletePost(id)
+      .then(post => dispatch(fetchPosts(selectedCategory)));
+  };
+}
+
+export function removePost(post) {
+  return {
+    type: DELETE_POST,
+    post
   };
 }

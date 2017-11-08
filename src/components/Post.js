@@ -6,7 +6,7 @@ import {
 } from 'react-bootstrap';
 import Moment from 'moment';
 import Pluralize from 'pluralize';
-import { postVote, editPost, fetchComments, newComment } from '../actions';
+import { postVote, editPost, fetchComments, newComment, deletePost } from '../actions';
 import { LinkContainer } from 'react-router-bootstrap';
 import Comment from './Comment';
 
@@ -24,8 +24,9 @@ class Post extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
     this.handleCommentChange = this.handleCommentChange.bind(this);
-    this.handleCommentAuthorChance = this.handleCommentAuthorChance.bind(this);
+    this.handleCommentAuthorChange = this.handleCommentAuthorChange.bind(this);
     this.handleSaveComment = this.handleSaveComment.bind(this);
+    this.handleDeletePost = this.handleDeletePost.bind(this);
   }
 
   componentDidMount() {
@@ -42,7 +43,7 @@ class Post extends Component {
     this.setState({ body: event.target.value });
   }
 
-  handleCommentAuthorChance(event) {
+  handleCommentAuthorChange(event) {
     this.setState({ commentAuthor: event.target.value });
   }
 
@@ -75,6 +76,12 @@ class Post extends Component {
 
     newComment(commentBody, commentAuthor, post.id);
     this.setState({ commentAuthor: '', commentBody: '', commentCount: commentCount + 1 });
+  }
+
+  handleDeletePost() {
+    const { deletePost, post, selectedCategory } = this.props;
+
+    deletePost(post.id, selectedCategory);
   }
 
   render() {
@@ -120,7 +127,7 @@ class Post extends Component {
                   <Button bsStyle='link'>edit</Button>
                 </LinkContainer>
               )}
-              <Button bsStyle='link'>delete</Button>
+              <Button bsStyle='link' onClick={() => this.handleDeletePost()}>delete</Button>
             </ButtonToolbar>
           </Col>
         </Row>
@@ -138,7 +145,7 @@ class Post extends Component {
                             type='text'
                             placeholder='username'
                             value={commentAuthor}
-                            onChange={this.handleCommentAuthorChance}
+                            onChange={this.handleCommentAuthorChange}
                           />
                         </FormGroup>
                         <FormGroup>
@@ -185,7 +192,8 @@ function mapDispatchToProps(dispatch) {
     postVote: (id, vote) => dispatch(postVote(id, vote)),
     editPost: (id, title, body) => dispatch(editPost(id, title, body)),
     fetchComments: (id) => dispatch(fetchComments(id)),
-    newComment: (body, author, parentId) => dispatch(newComment(body, author, parentId))
+    newComment: (body, author, parentId) => dispatch(newComment(body, author, parentId)),
+    deletePost: (id, selectedCategory) => dispatch(deletePost(id, selectedCategory))
   };
 }
 

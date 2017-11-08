@@ -20,12 +20,14 @@ class PostList extends Component {
   }
 
   render() {
-    const { posts } = this.props;
+    const { posts, selectedCategory } = this.props;
     return(
       <Panel header={<ControlBar />}>
         <ListGroup fill>
           {posts.map((post) => (
-            <ListGroupItem key={post.id}><Post post={post} detail={false}/></ListGroupItem>
+            <ListGroupItem key={post.id}>
+              <Post post={post} detail={false} selectedCategory={selectedCategory}/>
+            </ListGroupItem>
           ))}
         </ListGroup>
       </Panel>

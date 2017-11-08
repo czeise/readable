@@ -112,3 +112,15 @@ export function addPost(title, body, author, category) {
     }
   );
 }
+
+export function deletePost(id) {
+  const url = `${API}/posts/${id}`;
+
+  return fetch(
+    url,
+    {
+      method: 'DELETE',
+      headers: { ...headers, 'Content-Type': 'application/json' }
+    }
+  ).then(res => res.json());
+}
