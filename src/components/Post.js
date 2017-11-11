@@ -34,6 +34,13 @@ class Post extends Component {
     fetchComments(id);
   }
 
+  componentWillReceiveProps(nextProps) {
+    const { post } = nextProps;
+    if (post) {
+      this.setState({ body: post.body });
+    }
+  }
+
   postLoaded() {
     const { post } = this.props;
 

@@ -143,9 +143,17 @@ export function deletePost(id) {
   };
 }
 
-export function commentDelete(comment) {
+export function deleteComment(comment) {
   return dispatch => {
     return API.deleteComment(comment.id)
-      .then(() => fetchComments(comment.parentId));
+      .then(() => dispatch(fetchPosts()))
+      .then(() => dispatch(fetchComments(comment.parentId)));
+  };
+}
+
+export function addPost(title, body, author, category) {
+  return dispatch => {
+    return API.addPost(title, body, author, category)
+      .then(() => dispatch(fetchPosts()));
   };
 }
