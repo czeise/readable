@@ -6,7 +6,7 @@ import {
 } from 'react-bootstrap';
 import Moment from 'moment';
 import Pluralize from 'pluralize';
-import { postVote, editPost, fetchComments, newComment } from '../actions';
+import { postVote, editPost, fetchComments, newComment, deletePost } from '../actions';
 import { LinkContainer } from 'react-router-bootstrap';
 import Comment from './Comment';
 
@@ -15,6 +15,7 @@ class Post extends Component {
     super(props);
     this.state = {
       editMode: false,
+      body: '',
       commentBody: '',
       commentAuthor: ''
     };
@@ -31,6 +32,20 @@ class Post extends Component {
     const { fetchComments, id } = this.props;
 
     fetchComments(id);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { post } = nextProps;
+    if (post) {
+      this.setState({ body: post.body });
+    }
+  }
+
+  postLoaded() {
+    const { post } = this.props;
+
+    this.setState({ body: post.body });
+    return true;
   }
 
   handleVote(vote) {
@@ -78,14 +93,14 @@ class Post extends Component {
   }
 
   handleDeletePost() {
-    // const { deletePost, post, selectedCategory } = this.props;
-    //
-    // deletePost(post.id, selectedCategory);
+    const { deletePost, post } = this.props;
+
+    deletePost(post.id);
   }
 
   render() {
     const { post, detail, comments } = this.props;
-    const { editMode, commentAuthor, commentBody } = this.state;
+    const { body, editMode, commentAuthor, commentBody } = this.state;
     return(
       <div>
         {post &&
@@ -105,7 +120,7 @@ class Post extends Component {
                   <FormGroup>
                     <FormControl
                       componentClass='textarea'
-                      value={post.body}
+                      value={body}
                       disabled={!editMode}
                       onChange={this.handleChange}
                     />
@@ -196,8 +211,8 @@ function mapDispatchToProps(dispatch) {
     postVote: (id, vote) => dispatch(postVote(id, vote)),
     editPost: (id, title, body) => dispatch(editPost(id, title, body)),
     fetchComments: (id) => dispatch(fetchComments(id)),
-    newComment: (body, author, parentId) => dispatch(newComment(body, author, parentId))
-    // deletePost: (id, selectedCategory) => dispatch(deletePost(id, selectedCategory))
+    newComment: (body, author, parentId) => dispatch(newComment(body, author, parentId)),
+    deletePost: (id) => dispatch(deletePost(id))
   };
 }
 

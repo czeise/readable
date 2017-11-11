@@ -124,3 +124,15 @@ export function deletePost(id) {
     }
   ).then(res => res.json());
 }
+
+export function deleteComment(id) {
+  const url = `${API}/comments/${id}`;
+
+  return fetch(
+    url,
+    {
+      method: 'DELETE',
+      headers: { ...headers, 'Content-Type': 'application/json' }
+    }
+  ).then(res => res.json());
+}

@@ -8,8 +8,7 @@ import {
   SORT_BY_OLDEST,
   RECEIVE_POST,
   UPDATE_POST,
-  RECEIVE_COMMENTS,
-  DELETE_POST
+  RECEIVE_COMMENTS
 } from '../actions';
 
 function categories(state = [], action) {
@@ -51,8 +50,6 @@ function posts(state = [], action) {
       } else {
         return [...state, post];
       }
-    case DELETE_POST:
-      return state.map(oldPost => oldPost.id === post.id ? post : oldPost);
     default:
       return state;
   }

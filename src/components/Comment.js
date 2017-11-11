@@ -6,7 +6,7 @@ import {
 } from 'react-bootstrap';
 import Moment from 'moment';
 import Pluralize from 'pluralize';
-import { commentVote, editComment } from '../actions';
+import { commentVote, editComment, deleteComment } from '../actions';
 
 class Comment extends Component {
   constructor(props) {
@@ -48,6 +48,12 @@ class Comment extends Component {
      });
   }
 
+  handleDelete() {
+    const { deleteComment, comment } = this.props;
+
+    deleteComment(comment);
+  }
+
   render() {
     const { comment } = this.props;
     const { editMode, body } = this.state;
@@ -55,7 +61,6 @@ class Comment extends Component {
       <Row>
         <Col xs={3} sm={2} md={1}>
           <ButtonGroup vertical block bsSize='small'>
-            {/* TODO: Handle comment votes */}
             <Button onClick={() => this.handleVote('upVote')}><Glyphicon glyph='arrow-up' /></Button>
             <Button onClick={() => this.handleVote('downVote')}><Glyphicon glyph='arrow-down' /></Button>
           </ButtonGroup>
@@ -79,7 +84,7 @@ class Comment extends Component {
 
           <ButtonToolbar>
             <Button bsStyle='link' onClick={this.enableEdit}>edit</Button>
-            <Button bsStyle='link'>delete</Button>
+            <Button onClick={() => this.handleDelete()} bsStyle='link'>delete</Button>
           </ButtonToolbar>
         </Col>
       </Row>
@@ -91,11 +96,17 @@ Comment.propTypes = {
   comment: PropTypes.object.isRequired
 };
 
+function mapStateToProps(state) {
+  const { posts } = state;
+  return { posts };
+}
+
 function mapDispatchToProps(dispatch) {
   return {
     commentVote: (id, vote) => dispatch(commentVote(id, vote)),
-    editComment: (id, body) => dispatch(editComment(id, body))
+    editComment: (id, body) => dispatch(editComment(id, body)),
+    deleteComment: (comment) => dispatch(deleteComment(comment))
   };
 }
 
-export default connect(null, mapDispatchToProps)(Comment);
+export default connect(mapStateToProps, mapDispatchToProps)(Comment);

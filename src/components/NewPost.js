@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { FormGroup, ControlLabel, FormControl, Radio, Button } from 'react-bootstrap';
 import PropTypes from 'prop-types';
-import { addPost } from '../utils/api';
+import { addPost } from '../actions';
 import { Redirect } from 'react-router';
 
 class NewPost extends Component {
@@ -41,6 +41,7 @@ class NewPost extends Component {
   }
 
   handleSave() {
+    const { addPost } = this.props;
     const { title, body, author, selectedCategory } = this.state;
 
     addPost(title, body, author, selectedCategory);
@@ -115,4 +116,10 @@ function mapStateToProps(state) {
   return { categories };
 }
 
-export default connect(mapStateToProps, null)(NewPost);
+function mapDispatchToProps(dispatch) {
+  return {
+    addPost: (title, body, author, category) => dispatch(addPost(title, body, author, category))
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(NewPost);
