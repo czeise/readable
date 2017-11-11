@@ -9,6 +9,7 @@ import Pluralize from 'pluralize';
 import { postVote, editPost, fetchComments, newComment, deletePost } from '../actions';
 import { LinkContainer } from 'react-router-bootstrap';
 import Comment from './Comment';
+import { Redirect } from 'react-router-dom';
 
 class Post extends Component {
   constructor(props) {
@@ -17,7 +18,8 @@ class Post extends Component {
       editMode: false,
       body: '',
       commentBody: '',
-      commentAuthor: ''
+      commentAuthor: '',
+      deleted: false
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -96,11 +98,17 @@ class Post extends Component {
     const { deletePost, post } = this.props;
 
     deletePost(post.id);
+    this.setState({ deleted: true });
   }
 
   render() {
     const { post, detail, comments } = this.props;
-    const { body, editMode, commentAuthor, commentBody } = this.state;
+    const { body, editMode, commentAuthor, commentBody, deleted } = this.state;
+
+    if (deleted && detail) {
+      return(<Redirect to={`/${post.category}`}/>);
+    }
+
     return(
       <div>
         {post &&
