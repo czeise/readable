@@ -17,7 +17,7 @@ class Header extends Component {
       <div>
         <Navbar inverse collapseOnSelect>
           <Navbar.Header>
-            <IndexLinkContainer to='/'><Navbar.Brand>Home</Navbar.Brand></IndexLinkContainer>
+            <IndexLinkContainer to='/' style={{cursor: 'pointer'}}><Navbar.Brand>Home</Navbar.Brand></IndexLinkContainer>
             <Navbar.Toggle />
           </Navbar.Header>
           <Navbar.Collapse>
@@ -30,7 +30,9 @@ class Header extends Component {
             </Nav>
           </Navbar.Collapse>
         </Navbar>
-        <PageHeader>Readable <small>{selectedCategory}</small></PageHeader>
+        <PageHeader>
+          Readable <LinkContainer to={`/${selectedCategory}`} style={{cursor: 'pointer'}}><small>{selectedCategory}</small></LinkContainer>
+        </PageHeader>
       </div>
     );
   }
