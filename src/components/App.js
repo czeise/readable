@@ -3,10 +3,17 @@ import { Grid } from 'react-bootstrap';
 import { Route, Switch } from 'react-router-dom';
 import Header from './Header';
 import PostList from './PostList';
-import PostDetail from './PostDetail';
+import Post from './Post';
 import NewPost from './NewPost';
+import { connect } from 'react-redux';
+import { fetchPosts } from '../actions';
 
 class App extends Component {
+  componentDidMount() {
+    const { fetchPosts } = this.props;
+    fetchPosts();
+  }
+
   render() {
     return (
       <Grid>
@@ -25,11 +32,10 @@ class App extends Component {
             </div>
           )}/>
 
+          {/* Always renders, even if the category doesn't exist, that's OK */}
           <Route exact path='/:category' render={({ match }) => (
             <div>
-              {/* This will always render the header, even if the category doesn't exist */}
               <Header selectedCategory={match.params.category}/>
-              {/* TODO: For other component(s), only display if category exists... */}
               <PostList selectedCategory={match.params.category}/>
             </div>
           )}/>
@@ -37,7 +43,7 @@ class App extends Component {
           <Route exact path='/:category/:id' render={({ match }) => (
             <div>
               <Header selectedCategory={match.params.category}/>
-              <PostDetail id={match.params.id}/>
+              <Post id={match.params.id} detail={true}/>
             </div>
           )}/>
         </Switch>
@@ -46,4 +52,16 @@ class App extends Component {
   }
 }
 
-export default App;
+function mapStateToProps(state) {
+  const { posts } = state;
+
+  return { posts };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    fetchPosts: (selectedCategory) => dispatch(fetchPosts(selectedCategory))
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

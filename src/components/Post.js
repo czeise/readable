@@ -6,7 +6,7 @@ import {
 } from 'react-bootstrap';
 import Moment from 'moment';
 import Pluralize from 'pluralize';
-import { postVote, editPost, fetchComments, newComment, deletePost } from '../actions';
+import { postVote, editPost, fetchComments, newComment } from '../actions';
 import { LinkContainer } from 'react-router-bootstrap';
 import Comment from './Comment';
 
@@ -15,10 +15,8 @@ class Post extends Component {
     super(props);
     this.state = {
       editMode: false,
-      body: props.post.body,
       commentBody: '',
-      commentAuthor: '',
-      commentCount: props.post.commentCount
+      commentAuthor: ''
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -30,8 +28,9 @@ class Post extends Component {
   }
 
   componentDidMount() {
-    const { fetchComments, post } = this.props;
-    fetchComments(post.id);
+    const { fetchComments, id } = this.props;
+
+    fetchComments(id);
   }
 
   handleVote(vote) {
@@ -79,64 +78,66 @@ class Post extends Component {
   }
 
   handleDeletePost() {
-    const { deletePost, post, selectedCategory } = this.props;
-
-    deletePost(post.id, selectedCategory);
+    // const { deletePost, post, selectedCategory } = this.props;
+    //
+    // deletePost(post.id, selectedCategory);
   }
 
   render() {
     const { post, detail, comments } = this.props;
-    const { editMode, body, commentAuthor, commentBody, commentCount } = this.state;
+    const { editMode, commentAuthor, commentBody } = this.state;
     return(
       <div>
-        <Row>
-          <Col xs={3} sm={2} md={1}>
-            <ButtonGroup vertical block bsSize='small'>
-              <Button onClick={() => this.handleVote('upVote')}><Glyphicon glyph='arrow-up' /></Button>
-              <Button bsStyle='link' disabled>{post.voteScore}</Button>
-              <Button onClick={() => this.handleVote('downVote')}><Glyphicon glyph='arrow-down' /></Button>
-            </ButtonGroup>
-          </Col>
-          <Col xs={9} sm={10} md={11}>
-            <h4>{post.title}</h4>
-            <p>submitted {Moment(post.timestamp).fromNow()} by {post.author}</p>
-            {detail && (
-              <form>
-                <FormGroup>
-                  <FormControl
-                    componentClass='textarea'
-                    value={body}
-                    disabled={!editMode}
-                    onChange={this.handleChange}
-                  />
-                </FormGroup>
-                <ButtonToolbar hidden={!editMode}>
-                  <Button onClick={this.handleEdit}>save</Button>
-                  <Button onClick={this.disableEdit}>cancel</Button>
-                </ButtonToolbar>
-              </form>
-            )}
-            <ButtonToolbar>
-              <LinkContainer to={`/${post.category}/${post.id}`}>
-                <Button bsStyle='link'>{Pluralize('comment', commentCount, true)}</Button>
-              </LinkContainer>
-              {detail ? (
-                <Button bsStyle='link' onClick={this.enableEdit}>edit</Button>
-              ) : (
-                <LinkContainer to={`/${post.category}/${post.id}`}>
-                  <Button bsStyle='link'>edit</Button>
-                </LinkContainer>
+        {post &&
+          <Row>
+            <Col xs={3} sm={2} md={1}>
+              <ButtonGroup vertical block bsSize='small'>
+                <Button onClick={() => this.handleVote('upVote')}><Glyphicon glyph='arrow-up' /></Button>
+                <Button bsStyle='link' disabled>{post.voteScore}</Button>
+                <Button onClick={() => this.handleVote('downVote')}><Glyphicon glyph='arrow-down' /></Button>
+              </ButtonGroup>
+            </Col>
+            <Col xs={9} sm={10} md={11}>
+              <h4>{post.title}</h4>
+              <p>submitted {Moment(post.timestamp).fromNow()} by {post.author}</p>
+              {detail && (
+                <form>
+                  <FormGroup>
+                    <FormControl
+                      componentClass='textarea'
+                      value={post.body}
+                      disabled={!editMode}
+                      onChange={this.handleChange}
+                    />
+                  </FormGroup>
+                  <ButtonToolbar hidden={!editMode}>
+                    <Button onClick={this.handleEdit}>save</Button>
+                    <Button onClick={this.disableEdit}>cancel</Button>
+                  </ButtonToolbar>
+                </form>
               )}
-              <Button bsStyle='link' onClick={() => this.handleDeletePost()}>delete</Button>
-            </ButtonToolbar>
-          </Col>
-        </Row>
-        {detail &&
+              <ButtonToolbar>
+                <LinkContainer to={`/${post.category}/${post.id}`}>
+                  <Button bsStyle='link'>{Pluralize('comment', post.commentCount, true)}</Button>
+                </LinkContainer>
+                {detail ? (
+                  <Button bsStyle='link' onClick={this.enableEdit}>edit</Button>
+                ) : (
+                  <LinkContainer to={`/${post.category}/${post.id}`}>
+                    <Button bsStyle='link'>edit</Button>
+                  </LinkContainer>
+                )}
+                <Button bsStyle='link' onClick={() => this.handleDeletePost()}>delete</Button>
+              </ButtonToolbar>
+            </Col>
+          </Row>
+        }
+        {post && detail &&
           <div>
             <hr/>
             <Row>
               <Col xs={9} xsOffset={3} sm={10} smOffset={2} md={11} mdOffset={1}>
-                <Panel header={`all ${Pluralize('comments', commentCount, true)}`}>
+                <Panel header={`all ${Pluralize('comments', post.commentCount, true)}`}>
                   <ListGroup fill>
                     <ListGroupItem>
                       <form>
@@ -178,13 +179,16 @@ class Post extends Component {
 }
 
 Post.propTypes = {
-  post: PropTypes.object.isRequired,
+  id: PropTypes.string.isRequired,
   detail: PropTypes.bool.isRequired
 };
 
-function mapStateToProps(state) {
-  const { comments } = state;
-  return { comments };
+function mapStateToProps(state, ownProps) {
+  const { posts, comments } = state;
+
+  const post = posts.find(post => post.id === ownProps.id);
+
+  return { post, comments };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -192,8 +196,8 @@ function mapDispatchToProps(dispatch) {
     postVote: (id, vote) => dispatch(postVote(id, vote)),
     editPost: (id, title, body) => dispatch(editPost(id, title, body)),
     fetchComments: (id) => dispatch(fetchComments(id)),
-    newComment: (body, author, parentId) => dispatch(newComment(body, author, parentId)),
-    deletePost: (id, selectedCategory) => dispatch(deletePost(id, selectedCategory))
+    newComment: (body, author, parentId) => dispatch(newComment(body, author, parentId))
+    // deletePost: (id, selectedCategory) => dispatch(deletePost(id, selectedCategory))
   };
 }
 
