@@ -118,6 +118,7 @@ export function editPost(id, title, body) {
 export function newComment(body, author, parentId) {
   return dispatch => {
     return API.newComment(body, author, parentId)
+      .then(() => dispatch(fetchPosts()))
       .then(() => dispatch(fetchComments(parentId)));
   };
 }
@@ -139,7 +140,7 @@ export function editComment(id, body) {
 export function deletePost(id, selectedCategory) {
   return dispatch => {
     return API.deletePost(id)
-      .then(post => dispatch(fetchPosts(selectedCategory)));
+      .then(post => dispatch(fetchPosts(selectedCategory))); // TODO: should be able to drop the fetch posts...
   };
 }
 

@@ -2,31 +2,18 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import ControlBar from './ControlBar';
-import { fetchPosts } from '../actions';
 import Post from './Post';
 import { Panel, ListGroup, ListGroupItem } from 'react-bootstrap';
 
 class PostList extends Component {
-  componentDidMount() {
-    const { fetchPosts, selectedCategory } = this.props;
-    fetchPosts(selectedCategory);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const { fetchPosts, selectedCategory } = this.props;
-    if (nextProps.selectedCategory !== selectedCategory) {
-      fetchPosts(nextProps.selectedCategory);
-    }
-  }
-
   render() {
-    const { posts, selectedCategory } = this.props;
+    const { filteredPosts } = this.props;
     return(
       <Panel header={<ControlBar />}>
         <ListGroup fill>
-          {posts.map((post) => (
+          {filteredPosts.map((post) => (
             <ListGroupItem key={post.id}>
-              <Post post={post} detail={false} selectedCategory={selectedCategory}/>
+              <Post id={post.id} detail={false}/>
             </ListGroupItem>
           ))}
         </ListGroup>
@@ -36,19 +23,22 @@ class PostList extends Component {
 }
 
 PostList.propTypes = {
-  posts: PropTypes.array.isRequired,
   selectedCategory: PropTypes.string
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state, ownProps) {
   const { posts } = state;
-  return { posts };
+  const { selectedCategory } = ownProps;
+
+  let filteredPosts = [];
+
+  if (selectedCategory) {
+    filteredPosts = posts.filter(post => post.category === selectedCategory);
+  } else {
+    filteredPosts = posts;
+  }
+
+  return { filteredPosts };
 }
 
-function mapDispatchToProps(dispatch) {
-  return {
-    fetchPosts: (selectedCategory) => dispatch(fetchPosts(selectedCategory))
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(PostList);
+export default connect(mapStateToProps, null)(PostList);
