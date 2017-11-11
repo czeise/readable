@@ -113,7 +113,13 @@ class Post extends Component {
               </ButtonGroup>
             </Col>
             <Col xs={9} sm={10} md={11}>
-              <h4>{post.title}</h4>
+              {detail ? (
+                <h4>{post.title}</h4>
+              ) : (
+                <LinkContainer to={`/${post.category}/${post.id}`}>
+                  <a><h4>{post.title}</h4></a>
+                </LinkContainer>
+              )}
               <p>submitted {Moment(post.timestamp).fromNow()} by {post.author}</p>
               {detail && (
                 <form>
