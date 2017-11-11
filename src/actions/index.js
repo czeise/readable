@@ -8,7 +8,6 @@ export const SORT_BY_OLDEST = 'SORT_BY_OLDEST';
 export const RECEIVE_POST = 'RECEIVE_POST';
 export const UPDATE_POST = 'UPDATE_POST';
 export const RECEIVE_COMMENTS = 'RECEIVE_COMMENTS';
-export const DELETE_POST = 'DELETE_POST';
 
 export function receiveCategories(categories) {
   return {
@@ -137,16 +136,16 @@ export function editComment(id, body) {
   };
 }
 
-export function deletePost(id, selectedCategory) {
+export function deletePost(id) {
   return dispatch => {
     return API.deletePost(id)
-      .then(post => dispatch(fetchPosts(selectedCategory))); // TODO: should be able to drop the fetch posts...
+      .then(() => dispatch(fetchPosts()));
   };
 }
 
-export function removePost(post) {
-  return {
-    type: DELETE_POST,
-    post
+export function commentDelete(comment) {
+  return dispatch => {
+    return API.deleteComment(comment.id)
+      .then(() => fetchComments(comment.parentId));
   };
 }
