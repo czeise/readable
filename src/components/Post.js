@@ -111,6 +111,9 @@ class Post extends Component {
 
     return(
       <div>
+        {detail && !post &&
+          <h4>This post doesn't exist or has been deleted.</h4>
+        }
         {post &&
           <Row>
             <Col xs={3} sm={2} md={1}>
