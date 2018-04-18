@@ -9,7 +9,7 @@ The back-end for this project is available [here](https://github.com/udacity/rea
     - `node server.js`
 
 ## Installation & Launch Instructions
-Install the necessary packages with `npm install` and launch the application with `npm start`. At this point, the app should be available to you at [localhost:3000](http://localhost:3000/).
+Install the necessary packages with `yarn install` and launch the application with `yarn start`. At this point, the app should be available to you at [localhost:3000](http://localhost:3000/).
 
 ## create-react-app
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app). You can find more information on how to perform common tasks [here](https://github.com/facebookincubator/create-react-app/blob/master/packages/react-scripts/template/README.md).
