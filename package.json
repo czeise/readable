@@ -3,6 +3,14 @@
   "version": "0.0.1",
   "description": "A server for the Udacity Reddit Clone project for ReactND",
   "main": "index.js",
+  "engines": {
+    "node": "8.11.1",
+    "yarn": "1.6.0"
+  },
+  "scripts": {
+    "postinstall": "cd frontend/ && yarn install",
+    "start": "node server/server.js"
+  },
   "keywords": [
     "udacity",
     "redux",
